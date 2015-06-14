@@ -1,0 +1,17 @@
+<div class="jumbotron text-center">
+    <p>Submit your own proposition</p>  
+
+
+	<div class="">
+		<form novalidate class="css-form">
+			URL: <input class="form-control" type="text" ng-model="submitFormData.url" required /><br />
+			Description: <input class="form-control" type="text" ng-model="submitFormData.description" required /><br />
+			Your Email (Optional): <input class="form-control" type="text" ng-model="submitFormData.email" /><br />
+			<input class="button btn-primary" type="button" ng-click="resetSubmitForm()" value="Reset" />
+			<input class="button btn-primary" type="submit" ng-click="sendSubmitForm(submitFormData)" value="Save" />
+  		</form>		
+	</div>
+		
+</div>
+
+<div ui-view></div>
