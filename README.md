@@ -1,0 +1,1 @@
+swipe on what you like, and we reveal to you stats about yourself
