@@ -1,9 +1,13 @@
-<div class="media">
-    <a ng-click="toggleImage()"><img style="width:70%" id="followbutton" ng-src="{{propositionID}}"/></a>
+<div class="container text-center">
+	<div class="media">
+		<img style="width:70%" class="slide slide-animation nonDraggableImage"
+         ng-swipe-right="propositionClicked(1)" ng-swipe-left="propositionClicked(0)"
+         ng-hide="" ng-src="{{propositionID}}"/>
+	</div>
+
+	<!--// add some swipejs stuff here-->
+	<a ui-sref="session" class="button btn-primary" type="button" ng-click="propositionClicked(0)" value="Left">Left</a>
+	<a ui-sref="session" class="button btn-primary" type="button" ng-click="propositionClicked(1)" value="Right">Right</a>
 </div>
-
-<!--// add some swipejs stuff here
-<a ui-sref="session" class="button btn-primary" type="button" ng-click="propositionClicked(0)" value="Left">Left</a>
-<a ui-sref="session" class="button btn-primary" type="button" ng-click="propositionClicked(1)" value="Right">Right</a> -->
-
+	
 <div ui-view></div>

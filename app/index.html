@@ -9,7 +9,11 @@
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-animate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-touch.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.10.3/TweenMax.min.js"></script>
     <script src="app.js"></script>
+
 	  <!--Tutorials followed   -->
 	  <!--
 	https://scotch.io/tutorials/angular-routing-using-ui-router
@@ -26,8 +30,8 @@
     -->
       
     <style>
-        <!--body { padding-top:00px; }
-        .btn { margin-bottom:20px; } -->
+        body { padding-top:00px; }
+        .btn { margin-bottom:20px; } 
         html, body
         {
             height: 100%;
@@ -36,8 +40,8 @@
             position: relative;
             height: 100%;
         }
-        
-        .intro-text, h1, img {
+       
+        .intro-text, h1 {
           position: absolute;     
           left: 0;
           right: 0;
@@ -56,7 +60,10 @@
         img {
           top: 0;
         }
-
+		
+	.nonDraggableImage{
+		-webkit-user-drag: none;
+	}
     </style>
 
   </head>
@@ -80,13 +87,14 @@
 	<!-- MAIN CONTENT 
      add intro panel here, something like "Swipe left or right on each choice to play!" make it a div
      that is slightly opaque that disappears with the user clicks on it -->
-    <div id="wrapper">
-        <div class="intro-text">
-          <h1>Swipe left or right on each choice to play!</h1>
-        </div>  
-        <!-- THIS IS WHERE WE WILL INJECT OUR CONTENT ============================== -->
+		<!-- when $scope.myValue is truthy (element is hidden) -->
+		<div ng-hide="hideBool" class="ng-hide intro-text" ng-init="hideBool=false" ng-click="hideBool=true">
+			<h1>Swipe left or right on each choice to play!</h1>
+		</div>
+        
+		<!-- THIS IS WHERE WE WILL INJECT OUR CONTENT ============================== -->
         <div ui-view></div>
 
-    </div>	  
+ 
   </body>
 </html>

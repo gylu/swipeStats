@@ -1,0 +1,29 @@
+changes made:
+
+
+-got rid of div ID to wrapper class because it was making the view drop down for some reason.
+
+-removed jquery usage of hidding intro-text, and used angular's ng-hide by doing the following:
+
+--deleted this from index.html (and it's associated query event in app.js):
+        <div class="intro-text">
+          <h1>Swipe left or right on each choice to play!</h1>
+        </div>  
+		
+--added this into index.html:
+		<div ng-hide="hideBool" class="ng-hide intro-text" ng-init="hideBool=false" ng-click="hideBool=true">
+			<h1>Swipe left or right on each choice to play!</h1>
+		</div>
+		
+	
+-in index.html, removed the img tag from this, because it was putting the image lower in the page, which i thought there was no reason to (esp if ppl viewed this on a phone)
+      
+        .intro-text, h1 {
+          position: absolute;     
+          left: 0;
+          right: 0;
+          bottom: 0;
+          margin: auto;
+        }
+		
+-blindly copied/pasted code from this demo: http://onehungrymind.com/build-sweet-angularjs-photo-slider-pt-2-ngtouch/
