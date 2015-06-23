@@ -33,7 +33,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
     
 app.controller('mainController', function($scope,$stateParams,$state) {
    $scope.init = function () {
-       /*
        $.ajax({
          type: 'GET', url: '/init', contentType: 'application/json', dataType: 'json'
        })
@@ -43,9 +42,9 @@ app.controller('mainController', function($scope,$stateParams,$state) {
        .success(function(params){
          $scope.sessionID = params.sessionID;
          $scope.numProps = params.numProps;
-       }); */
-       $scope.sessionID = 1;
-       $scope.numProps = 5;
+       });
+       //$scope.sessionID = 1;
+       //$scope.numProps = 5;
        $scope.propositionID = '/app/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
        $scope.propsShown = [$scope.propositionID];
    }
