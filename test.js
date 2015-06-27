@@ -36,4 +36,13 @@ describe('Initial server query on /init', function(){
     
 });
 
+describe('Submitting new proposition', function() {
+
+    it('Returns a 201 status code', function(done){
+      request(app)
+        .post('/new_proposition')
+        .send({description: 'where the simpsons live',email: 'joebob@munzer.com',url: 'www.donger.com'})
+        .expect(201,done);
+    });
+});
 

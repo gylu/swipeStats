@@ -41,7 +41,6 @@ app.controller('mainController', function($scope,$stateParams,$state) {
        $.ajax({
          type: 'GET', 
          url: '/init', 
-         contentType: 'application/json', 
          dataType: 'json',
          context: $scope
        })
@@ -49,6 +48,7 @@ app.controller('mainController', function($scope,$stateParams,$state) {
          $('.alert').show();
        })
        .success(function(params){
+         console.log(params);
          this.sessionID = params.sessionID;
          this.numProps = params.numProps;
          this.propositionID = '/images/prop' + Math.ceil(Math.random() * this.numProps) + '.jpg';
@@ -61,15 +61,15 @@ app.controller('mainController', function($scope,$stateParams,$state) {
    $scope.propositionClicked = function(choice){
         
         /* ajax call to server to post */
-        /*var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
+        var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
         
         $.ajax({
-          type: 'POST', url: '/new_proposition', data: propData
+          type: 'POST', url: '/new_choice', data: propData
         })
         .error(function() {
           $('.alert').show();
         });
-        */
+        
         
         $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         /*while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) {
@@ -84,12 +84,20 @@ app.controller('mainController', function($scope,$stateParams,$state) {
 });
  
 app.controller('submitController', function($scope, $stateParams,$state) {
-	
-	$scope.masterSubmitForm = {};
-
       $scope.sendSubmitForm = function(submitFormData) {
-        $scope.masterSubmitForm = angular.copy(submitFormData);
-		  console.log("submitted form")
+        $.ajax({
+          type: 'POST', 
+          url: '/new_proposition', 
+          data: JSON.stringify(submitFormData),
+          contentType: 'application/json',
+          context: $scope
+        })
+        .error(function() {
+          $('.alert').show();
+        })
+        .success(function(){
+          alert('Submission successful!');
+        });
       };
 
       $scope.resetSubmitForm = function() {
@@ -100,7 +108,7 @@ app.controller('submitController', function($scope, $stateParams,$state) {
 	    
 });
     
- })(); 
+})(); 
 //reason why the whole thing is wrapped in parenthesis for javascript to work
 //http://stackoverflow.com/questions/9053842/advanced-javascript-why-is-this-function-wrapped-in-parentheses
 $(document).ready(function(){
@@ -108,6 +116,8 @@ $(document).ready(function(){
     $(this).hide();
   });
 });
+
+
 // in swipe.js, end goal:
 // on user click track when swipe occurs with swipe.js code, 
 // use toggleSlide out at same time toggleSlide in with newly created div (or hammerjs)
