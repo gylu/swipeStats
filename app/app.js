@@ -4,7 +4,7 @@
 tutorial followed: https://scotch.io/tutorials/how-to-correctly-use-bootstrapjs-and-angularjs-together
 code pen example: http://codepen.io/sevilayha/pen/ExKGs
   */
-  
+ 
 var app = angular.module('app', ['ui.bootstrap', 'ui.router']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
@@ -32,27 +32,35 @@ app.config(function($stateProvider, $urlRouterProvider) {
 });
     
 app.controller('mainController', function($scope,$stateParams,$state) {
-   $scope.init = function () {
+   $scope.sessionID = 0;
+   $scope.numProps = 0;
+   $scope.propositionID = '/images/prop2.jpg';
+   $scope.propsShown = [];
+   $scope.init = function ($scope) {
+       
        $.ajax({
-         type: 'GET', url: '/init', contentType: 'application/json', dataType: 'json'
+         type: 'GET', 
+         url: '/init', 
+         contentType: 'application/json', 
+         dataType: 'json',
+         context: $scope
        })
        .error(function() {
          $('.alert').show();
        })
        .success(function(params){
-         $scope.sessionID = params.sessionID;
-         $scope.numProps = params.numProps;
+         this.sessionID = params.sessionID;
+         this.numProps = params.numProps;
+         this.propositionID = '/images/prop' + Math.ceil(Math.random() * this.numProps) + '.jpg';
+         this.propsShown = [this.propositionID];
+         $state.go('home');
        });
-       //$scope.sessionID = 1;
-       //$scope.numProps = 5;
-       $scope.propositionID = '/app/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
-       $scope.propsShown = [$scope.propositionID];
-   }
-   $scope.init();
 
-	$scope.propositionClicked = function(choice){
+   }
+   $scope.init($scope);
+   $scope.propositionClicked = function(choice){
         
-        // ajax call to server to post
+        /* ajax call to server to post */
         /*var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
         
         $.ajax({
@@ -62,17 +70,19 @@ app.controller('mainController', function($scope,$stateParams,$state) {
           $('.alert').show();
         });
         */
-        $scope.propositionID = '/app/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
+        
+        $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         /*while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) {
-            $scope.propositionID = '/app/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
+            $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         }
         if ($scope.propsShown.length < $scope.numProps) {
           $scope.propsShown.push($scope.propositionID);
-        }*/
-        // if propsShown.length % 5 == 0, get prediction from server and show
+        }
+        if propsShown.length % 5 == 0, get prediction from server and show*/
+ 
 	}
 });
-    
+ 
 app.controller('submitController', function($scope, $stateParams,$state) {
 	
 	$scope.masterSubmitForm = {};
