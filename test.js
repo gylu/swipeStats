@@ -31,7 +31,7 @@ describe('Initial server query on /init', function(){
     it('Returns initial cities', function(done) {
       request(app)
         .get('/init')
-        .expect(JSON.stringify({sessionID: 1,numProps: 5}),done);      
+        .expect(JSON.stringify({sessionID: 2,numProps: 5}),done);      
     });
     
 });

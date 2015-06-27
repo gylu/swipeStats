@@ -48,7 +48,6 @@ app.controller('mainController', function($scope,$stateParams,$state) {
          $('.alert').show();
        })
        .success(function(params){
-         console.log(params);
          this.sessionID = params.sessionID;
          this.numProps = params.numProps;
          this.propositionID = '/images/prop' + Math.ceil(Math.random() * this.numProps) + '.jpg';
@@ -62,24 +61,30 @@ app.controller('mainController', function($scope,$stateParams,$state) {
         
         /* ajax call to server to post */
         var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
-        
+        console.log($scope.propsShown.length);
         $.ajax({
-          type: 'POST', url: '/new_choice', data: propData
+          type: 'POST', 
+          url: '/new_choice', 
+          data: JSON.stringify(propData),
+          contentType: 'application/json',
+          context: $scope
         })
         .error(function() {
           $('.alert').show();
+        })
+        .success(function(msg) {
+          if ($scope.propsShown.length % 5 == 0) {
+            alert(msg);
+          }
         });
-        
-        
+       
         $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
-        /*while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) {
+        while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) ) {
             $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         }
         if ($scope.propsShown.length < $scope.numProps) {
           $scope.propsShown.push($scope.propositionID);
-        }
-        if propsShown.length % 5 == 0, get prediction from server and show*/
- 
+        } 
 	}
 });
  
