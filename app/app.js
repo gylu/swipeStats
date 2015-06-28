@@ -61,22 +61,31 @@ app.controller('mainController', function($scope,$stateParams,$state) {
         
         /* ajax call to server to post */
         var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
-        console.log($scope.propsShown.length);
         $.ajax({
           type: 'POST', 
           url: '/new_choice', 
           data: JSON.stringify(propData),
-          contentType: 'application/json',
-          context: $scope
+          contentType: 'application/json'
         })
         .error(function() {
           $('.alert').show();
-        })
-        .success(function(msg) {
-          if ($scope.propsShown.length % 5 == 0) {
-            alert(msg);
-          }
         });
+
+        // get prediction every n choices
+        if ($scope.propsShown.length % 5 == 0) {
+          $.ajax({
+              type: 'POST', 
+              url: '/prediction', 
+              data: JSON.stringify({sessionID: $scope.sessionID}),
+              contentType: 'application/json'            
+          })
+          .error(function() {
+            $('alert').show();
+          })
+          .success(function(msg) {
+            alert(msg);
+          });
+        }
        
         $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) ) {

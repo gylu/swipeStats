@@ -46,3 +46,17 @@ describe('Submitting new proposition', function() {
     });
 });
 
+describe('Ask for new prediction', function() {
+    it('Returns a 200 status code', function(done){
+      request(app)
+        .post('/prediction')
+        .send({sessionID: 2})
+        .expect(200,done);
+    });
+    it('Returns baller message', function(done){
+      request(app)
+        .post('/prediction')
+        .send({sessionID: 2})
+        .expect('+4 to genius you suave nerd baller you on session: 2',done)
+    });
+});

@@ -22,6 +22,10 @@ app.post('/new_proposition', jsonencode, function(request,response){
     response.sendStatus(201);
 });
 
+app.post('/prediction', jsonencode, function(request,response){
+       response.send('+4 to genius you suave nerd baller you on session: ' + request.body.sessionID);
+});
+
 app.post('/new_choice', jsonencode, function(request,response){
     var sessionID = 'session' + request.body.sessionID;
     var propArray = request.body.proposition;
@@ -33,11 +37,7 @@ app.post('/new_choice', jsonencode, function(request,response){
     } else {
        choices[sessionID] = [sessionEntry];
     }
-    if (choices[sessionID].length % 5 == 0) {  
-       response.send('+4 to genius you suave nerd baller you on session: ' + request.body.sessionID);
-    } else {
-       response.sendStatus(201);    
-    }
+    response.sendStatus(201);    
 
 });
 // when session closes, if fewer than n entries, perhaps delete session
