@@ -30,8 +30,6 @@ app.get('/init', function(request,response){
     });
     client.hget('sessions','numSessions',function(error,numSessions){
       tempSession = (parseInt(numSessions)+1); 
-      console.log('numSessions: ' + parseInt(numSessions));    
-      console.log('temp session: ' + tempSession);
       var params = {sessionID: tempSession, numProps: tempNumProps};
       response.json(params);
       client.hset('sessions','numSessions',tempSession);    
@@ -61,17 +59,10 @@ app.post('/new_choice', jsonencode, function(request,response){
     var sessionEntry = {proposition: propositionID, choice: parseInt(request.body.choice)};
 
     client.hkeys(sessionID,function(error,choices){
-        console.log(sessionID);
-        console.log(choices);
-        console.log(choices.length);
         if (choices.length != 0) {
             var newChoice = 'choice' + (choices.length+1);
-            console.log(newChoice);
             client.hset(sessionID,newChoice , JSON.stringify(sessionEntry));
         } else {
-            console.log('session id: '+sessionID);
-            console.log(sessionEntry);
-            console.log(JSON.stringify(sessionEntry));
             client.hset(sessionID, 'choice1' , JSON.stringify(sessionEntry));  
         } 
     });

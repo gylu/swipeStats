@@ -51,7 +51,6 @@ app.controller('mainController', function($scope,$stateParams,$state) {
          $('.alert').show();
        })
        .success(function(params){
-           console.log(params.sessionID);
          this.sessionID = params.sessionID;
          this.numProps = params.numProps;
          this.propositionID = '/images/prop' + Math.ceil(Math.random() * this.numProps) + '.jpg';
