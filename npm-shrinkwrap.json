@@ -350,7 +350,7 @@
     },
     "hiredis": {
       "version": "0.4.0",
-      "from": "hiredis@*",
+      "from": "https://registry.npmjs.org/hiredis/-/hiredis-0.4.0.tgz",
       "resolved": "https://registry.npmjs.org/hiredis/-/hiredis-0.4.0.tgz",
       "dependencies": {
         "bindings": {
@@ -367,7 +367,7 @@
     },
     "redis": {
       "version": "0.12.1",
-      "from": "redis@*",
+      "from": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz",
       "resolved": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz"
     }
   }

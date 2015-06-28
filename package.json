@@ -35,7 +35,7 @@
   "dependencies": {
     "body-parser": "^1.13.1",
     "express": "^4.13.0",
-    "hiredis": "^0.4.0",
-    "redis": "^0.12.1"
+    "hiredis": "https://registry.npmjs.org/hiredis/-/hiredis-0.4.0.tgz",
+    "redis": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz"
   }
 }

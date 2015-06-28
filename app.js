@@ -7,19 +7,46 @@ var jsonencode = bodyParser.json();
 
 app.use(express.static('app'));
 
-var new_propositions = [{url: 'www.google.com', description: 'search engine', email: 'tor@gmail.com'}];
+var redis = require('redis');
+var client = redis.createClient();
 
-var choices = {session0: [{proposition: 1, choice: 0}, {proposition: 2, choice: 1}],
-               session1: [{proposition: 2, choice: 1}, {proposition: 4, choice: 1}]}; 
+// perhaps move all this init param stuff to separate script to only run once.
+client.hset('new_propositions', 'newProp1' , {url: 'www.google.com', description: 'search engine', email: 'tor@gmail.com'});
+
+client.hset( 'session0','choice1' , {proposition: 1, choice: 0});
+client.hset( 'session0','choice2' , {proposition: 2, choice: 1});
+
+client.hset( 'session1','choice1' , {proposition: 2, choice: 1});
+client.hset( 'session1','choice2' , {proposition: 4, choice: 1});
+
+client.hset('propositions','numProps',5);
+client.hset('sessions','numSessions',0);
 
 app.get('/init', function(request,response){
-    var params = {sessionID: 2, numProps: 5};
-    response.json(params);
+    var tempNumProps;
+    var tempSession;
+    client.hget('propositions','numProps',function(error,numProps){
+      tempNumProps = numProps;
+    });
+    client.hget('sessions','numSessions',function(error,numSessions){
+      tempSession = (parseInt(numSessions)+1); 
+      console.log('numSessions: ' + parseInt(numSessions));    
+      console.log('temp session: ' + tempSession);
+      var params = {sessionID: tempSession, numProps: tempNumProps};
+      response.json(params);
+      client.hset('sessions','numSessions',tempSession);    
+    });
+    
+
 });
 
 app.post('/new_proposition', jsonencode, function(request,response){
-    new_propositions.push(request.body);
-    response.sendStatus(201);
+    client.hkeys('new_propositions',function(error,newProps){
+      var newPropNum = newProps.length;
+      var newProp = 'newProp' + (newPropNum + 1);
+      client.hset('new_propositions',newProp,JSON.stringify(request.body));
+      response.sendStatus(201);
+    });
 });
 
 app.post('/prediction', jsonencode, function(request,response){
@@ -32,13 +59,22 @@ app.post('/new_choice', jsonencode, function(request,response){
     var propImage = propArray.split('/')[2];
     var propositionID = parseInt(propImage.substr(4,propImage.length-8));
     var sessionEntry = {proposition: propositionID, choice: parseInt(request.body.choice)};
-    if (choices.hasOwnProperty(sessionID)) {
-        choices[sessionID].push(sessionEntry);
-    } else {
-       choices[sessionID] = [sessionEntry];
-    }
-    response.sendStatus(201);    
 
+    client.hkeys(sessionID,function(error,choices){
+        console.log(sessionID);
+        console.log(choices);
+        console.log(choices.length);
+        if (choices.length != 0) {
+            var newChoice = 'choice' + (choices.length+1);
+            console.log(newChoice);
+            client.hset(sessionID,newChoice , JSON.stringify(sessionEntry));
+        } else {
+            console.log('session id: '+sessionID);
+            console.log(sessionEntry);
+            console.log(JSON.stringify(sessionEntry));
+            client.hset(sessionID, 'choice1' , JSON.stringify(sessionEntry));  
+        } 
+    });
 });
 // when session closes, if fewer than n entries, perhaps delete session
 module.exports = app;
