@@ -32,12 +32,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
 });
     
 app.controller('mainController', function($scope,$stateParams,$state) {
-   $scope.sessionID = 0;
-   $scope.numProps = 0;
-   $scope.propositionID = '/images/prop2.jpg';
-   $scope.propsShown = [];
-   $scope.init = function ($scope) {
-       
+    // Initialize App Variables
+    $scope.sessionID = 0;
+    $scope.numProps = 0;
+    $scope.propositionID = '/images/prop2.jpg';
+    $scope.propsShown = [];
+
+    // Define Init Function
+    $scope.init = function ($scope) {
+
        $.ajax({
          type: 'GET', 
          url: '/init', 
@@ -55,11 +58,13 @@ app.controller('mainController', function($scope,$stateParams,$state) {
          $state.go('home');
        });
 
-   }
-   $scope.init($scope);
-   $scope.propositionClicked = function(choice){
-        
-        /* ajax call to server to post */
+    }
+    $scope.init($scope);
+    
+    // Define click function
+    $scope.propositionClicked = function(choice){
+
+        // ajax call to server to post 
         var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
         $.ajax({
           type: 'POST', 
@@ -86,7 +91,8 @@ app.controller('mainController', function($scope,$stateParams,$state) {
             alert(msg);
           });
         }
-       
+
+        // Get new prop id and ensure it hasn't already been shown
         $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
         while ( ($.inArray($scope.propositionID, $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) ) {
             $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
@@ -94,11 +100,12 @@ app.controller('mainController', function($scope,$stateParams,$state) {
         if ($scope.propsShown.length < $scope.numProps) {
           $scope.propsShown.push($scope.propositionID);
         } 
-	}
+    }
 });
  
 app.controller('submitController', function($scope, $stateParams,$state) {
-      $scope.sendSubmitForm = function(submitFormData) {
+    // Define submit form function
+    $scope.sendSubmitForm = function(submitFormData) {
         $.ajax({
           type: 'POST', 
           url: '/new_proposition', 
@@ -112,24 +119,31 @@ app.controller('submitController', function($scope, $stateParams,$state) {
         .success(function(){
           alert('Submission successful!');
         });
-      };
+    };
 
-      $scope.resetSubmitForm = function() {
-        $scope.submitFormData = {};
-      };
+    // Definei reset form function
+    $scope.resetSubmitForm = function() {
+      $scope.submitFormData = {};
+    };
 
-      $scope.resetSubmitForm();
+    $scope.resetSubmitForm();
 	    
 });
     
 })(); 
-//reason why the whole thing is wrapped in parenthesis for javascript to work
-//http://stackoverflow.com/questions/9053842/advanced-javascript-why-is-this-function-wrapped-in-parentheses
+
+// Hide intro div
 $(document).ready(function(){
   $('.intro-text').on('click', function() {
     $(this).hide();
   });
 });
+
+//  NOTES  //
+
+//reason why the whole thing is wrapped in parenthesis for javascript to work
+//http://stackoverflow.com/questions/9053842/advanced-javascript-why-is-this-function-wrapped-in-parentheses
+
 
 
 // in swipe.js, end goal:
