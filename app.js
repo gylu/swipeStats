@@ -7,8 +7,18 @@ var jsonencode = bodyParser.json();
 
 app.use(express.static('app'));
 
+// Redis connection
 var redis = require('redis');
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    var client = redis.createClient(rtg.port, rtg.hostname);
+    client.auth(rtg.auth.split(":")[1]);
+} else {
+    var redis = require("redis").createClient();
+}
+
 var client = redis.createClient();
+// End redis connection
 
 // perhaps move all this init param stuff to separate script to only run once.
 client.hset('new_propositions', 'newProp1' , {url: 'www.google.com', description: 'search engine', email: 'tor@gmail.com'});
