@@ -74,6 +74,7 @@ app.post('/new_choice', jsonencode, function(request,response){
             client.hset(sessionID, 'choice1' , JSON.stringify(sessionEntry));  
         } 
     });
+    response.sendStatus(201);
 });
 // when session closes, if fewer than n entries, perhaps delete session
 module.exports = app;
