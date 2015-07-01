@@ -14,10 +14,8 @@ if (process.env.REDISTOGO_URL) {
     var client = redis.createClient(rtg.port, rtg.hostname);
     client.auth(rtg.auth.split(":")[1]);
 } else {
-    var redis = require("redis").createClient();
+    var client = redis.createClient();
 }
-
-var client = redis.createClient();
 // End redis connection
 
 // perhaps move all this init param stuff to separate script to only run once.
