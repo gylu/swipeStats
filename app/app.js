@@ -31,7 +31,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
         
 });
     
-app.controller('mainController', function($scope,$stateParams,$state) {
+app.controller('mainController', function($scope,$stateParams,$state, $rootScope) {
    $scope.init = function () {
        /*
        $.ajax({
@@ -52,6 +52,7 @@ app.controller('mainController', function($scope,$stateParams,$state) {
    $scope.init();
 
 	$scope.propositionClicked = function(choice){
+		$rootScope.style = styles[choice];
 		console.log("for proposition: "+$scope.propositionID + ", user selected: " +choice);
         // ajax call to server to post
         /*var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
@@ -112,6 +113,13 @@ app.controller('mainController', function($scope,$stateParams,$state) {
     	}
     }
 
+  var styles = {
+    // appear from right
+    0: '.enter-setup {   position:absolute;   -webkit-transition: 0.5s ease-out all;   -webkit-transform:translate3d(100%,0,0)  }  .enter-setup.enter-start {   position:absolute;  -webkit-transform:translate3d(0,0,0)}  .leave-setup {   position:absolute;   -webkit-transition: 0.5s ease-out all;   -webkit-transform:translate3d(0,0,0)} .leave-setup.leave-start {   position:absolute;  -webkit-transform:translate3d(-100%,0,0) };',
+    // appear from left
+    1: '.enter-setup {   position:absolute;   -webkit-transition: 0.5s ease-out all; -webkit-transform:translate3d(-100%,0,0)}  .enter-setup.enter-start {   position:absolute;   -webkit-transform:translate3d(0,0,0) }  .leave-setup {   position:absolute;   -webkit-transition: 0.5s ease-out all;  -webkit-transform:translate3d(0,0,0)} .leave-setup.leave-start {   position:absolute;  -webkit-transform:translate3d(100%,0,0) };'
+  };
+  $rootScope.style=styles[0];
 });
     
 app.controller('submitController', function($scope, $stateParams,$state) {

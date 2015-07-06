@@ -68,7 +68,7 @@
 
   </head>
   
-  <body ng-keydown="count = count + 1; eventPressed = $event; keyPressed($event)" ng-init="count=0" ng-controller="BodyController">
+  <body ng-keydown="keyPressed($event)" ng-controller="BodyController">
 
     <!-- the ng-keydown listens for keystrokes -->
 	  <!-- apply our angular app to our site -->
@@ -85,7 +85,6 @@
 		</ul>
 	</nav>
 
-	  	  key arrow count: {{count}} , {{eventPressed}}
 	<!-- MAIN CONTENT 
      add intro panel here, something like "Swipe left or right on each choice to play!" make it a div
      that is slightly opaque that disappears with the user clicks on it -->
@@ -95,7 +94,7 @@
 		</div>
         
 		<!-- THIS IS WHERE WE WILL INJECT OUR CONTENT ============================== -->
-        <div ui-view></div>
+    <div ui-view></div>
 
  
   </body>
