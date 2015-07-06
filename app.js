@@ -47,6 +47,7 @@ app.get('/init', function(request,response){
 });
 
 app.post('/new_proposition', jsonencode, function(request,response){
+    console.log(request.body);
     client.hkeys('new_propositions',function(error,newProps){
       var newPropNum = newProps.length;
       var newProp = 'newProp' + (newPropNum + 1);

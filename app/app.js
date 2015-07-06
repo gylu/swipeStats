@@ -30,66 +30,53 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
         
 });
+
+app.controller('introDivController', function($scope) {
+    // Initialize hideIntro
+    $scope.hideIntro = false;
+});
     
-app.controller('mainController', function($scope,$stateParams,$state) {
+app.controller('mainController', function($http,$scope,$stateParams,$state) {
     // Initialize App Variables
     $scope.sessionID = 0;
     $scope.numProps = 0;
-    $scope.propositionID = '/images/prop2.jpg';
+    $scope.propositionID = '';
     $scope.propsShown = [];
 
     // Define Init Function
-    $scope.init = function ($scope) {
-
-       $.ajax({
-         type: 'GET', 
-         url: '/init', 
-         dataType: 'json',
-         context: $scope
-       })
-       .error(function() {
-         $('.alert').show();
-       })
-       .success(function(params){
-         this.sessionID = params.sessionID;
-         this.numProps = params.numProps;
-         this.propositionID = '/images/prop' + Math.ceil(Math.random() * this.numProps) + '.jpg';
-         this.propsShown = [this.propositionID];
-         $state.go('home');
-       });
-
+    $scope.init = function () {
+       $http.get('/init').
+         success(function(params) {
+             $scope.sessionID = params.sessionID;
+             $scope.numProps = params.numProps;
+             $scope.propositionID = '/images/prop' + Math.ceil(Math.random() * $scope.numProps) + '.jpg';
+             $scope.propsShown = [$scope.propositionID];        
+         }).
+         error(function(data) {
+             alert(data);
+         });
     }
-    $scope.init($scope);
+    $scope.init();
     
     // Define click function
     $scope.propositionClicked = function(choice){
 
         // ajax call to server to post 
         var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionID, choice: choice};
-        $.ajax({
-          type: 'POST', 
-          url: '/new_choice', 
-          data: JSON.stringify(propData),
-          contentType: 'application/json'
-        })
-        .error(function() {
-          $('.alert').show();
-        });
+        $http.post('/new_choice', propData).
+         error(function(msg) {
+             alert(msg);
+         });       
 
         // get prediction every n choices
         if ($scope.propsShown.length % 5 == 0) {
-          $.ajax({
-              type: 'POST', 
-              url: '/prediction', 
-              data: JSON.stringify({sessionID: $scope.sessionID}),
-              contentType: 'application/json'            
-          })
-          .error(function() {
-            $('alert').show();
-          })
-          .success(function(msg) {
-            alert(msg);
-          });
+          $http.post('/prediction',{sessionID: $scope.sessionID}).
+            success(function(msg) {
+              alert(msg);
+            }).
+            error(function(msg) {
+              alert(msg);
+            });
         }
 
         // Get new prop id and ensure it hasn't already been shown
@@ -103,22 +90,16 @@ app.controller('mainController', function($scope,$stateParams,$state) {
     }
 });
  
-app.controller('submitController', function($scope, $stateParams,$state) {
+app.controller('submitController', function($http,$scope,$stateParams,$state) {
     // Define submit form function
     $scope.sendSubmitForm = function(submitFormData) {
-        $.ajax({
-          type: 'POST', 
-          url: '/new_proposition', 
-          data: JSON.stringify(submitFormData),
-          contentType: 'application/json',
-          context: $scope
-        })
-        .error(function() {
-          $('.alert').show();
-        })
-        .success(function(){
-          alert('Submission successful!');
-        });
+        $http.post('/new_proposition', submitFormData).
+          success(function(){
+            alert('Submission successful!');
+          }).
+          error(function(msg){
+            alert(msg);
+          });
     };
 
     // Definei reset form function
@@ -131,13 +112,6 @@ app.controller('submitController', function($scope, $stateParams,$state) {
 });
     
 })(); 
-
-// Hide intro div
-$(document).ready(function(){
-  $('.intro-text').on('click', function() {
-    $(this).hide();
-  });
-});
 
 //  NOTES  //
 
