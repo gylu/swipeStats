@@ -96,6 +96,22 @@ app.controller('mainController', function($scope,$stateParams,$state) {
 		$scope.currentIndex = ($scope.currentIndex > 0) ? --$scope.currentIndex : $scope.slides.length - 1;
 	};
 	
+	$scope.$parent.keyPressed = function(event){
+	    console.log(event.keyCode + " In child scope.");
+	    if (event.keyCode == 38)
+	        console.log("up arrow");
+	    else if (event.keyCode == 39){
+	        console.log("right arrow");
+	    	$scope.propositionClicked(1);
+	    }
+	    else if (event.keyCode == 40)
+	    	console.log("down arrow");
+	    else if (event.keyCode == 37){
+	        console.log("left arrow");
+	    	$scope.propositionClicked(0);
+    	}
+    }
+
 });
     
 app.controller('submitController', function($scope, $stateParams,$state) {
@@ -112,7 +128,26 @@ app.controller('submitController', function($scope, $stateParams,$state) {
       };
 
       $scope.resetSubmitForm();
-	    
+
+});
+
+
+app.controller('BodyController', function($scope, $stateParams,$state) {
+	$scope.$parent.keyPressed = function(event){
+	    console.log(event.keyCode + " In parent scope");
+	    if (event.keyCode == 38)
+	        console.log("up arrow");
+	    else if (event.keyCode == 39){
+	        console.log("right arrow");
+	    	$scope.propositionClicked(1);
+	    }
+	    else if (event.keyCode == 40)
+	    	console.log("down arrow");
+	    else if (event.keyCode == 37){
+	        console.log("left arrow");
+	    	$scope.propositionClicked(0);
+    	}
+    }
 });
 
 app.animation('.slide-animation', function () {
@@ -151,14 +186,7 @@ app.animation('.slide-animation', function () {
 		}
 	};
 });	
-	
-	
+		
  })(); 
 //reason why the whole thing is wrapped in parenthesis for javascript to work
 //http://stackoverflow.com/questions/9053842/advanced-javascript-why-is-this-function-wrapped-in-parentheses
-
-
-// in swipe.js, end goal:
-// on user click track when swipe occurs with swipe.js code, 
-// use toggleSlide out at same time toggleSlide in with newly created div (or hammerjs)
-// delete old div after slide out

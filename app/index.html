@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Hackathon</title>
+    <title>SwipeStats</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.js"></script>
     <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
@@ -68,8 +68,9 @@
 
   </head>
   
-  <body>   
+  <body ng-keydown="count = count + 1; eventPressed = $event; keyPressed($event)" ng-init="count=0" ng-controller="BodyController">
 
+    <!-- the ng-keydown listens for keystrokes -->
 	  <!-- apply our angular app to our site -->
 
 	<!-- NAVIGATION -->
@@ -84,6 +85,7 @@
 		</ul>
 	</nav>
 
+	  	  key arrow count: {{count}} , {{eventPressed}}
 	<!-- MAIN CONTENT 
      add intro panel here, something like "Swipe left or right on each choice to play!" make it a div
      that is slightly opaque that disappears with the user clicks on it -->
