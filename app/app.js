@@ -112,6 +112,7 @@ app.controller('submitController', function($http,$scope,$stateParams,$state) {
         $http.post('/new_proposition', submitFormData).
           success(function(){
             alert('Submission successful!');
+            $scope.resetSubmitForm();
           }).
           error(function(msg){
             alert(msg);
