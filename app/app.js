@@ -5,7 +5,7 @@ tutorial followed: https://scotch.io/tutorials/how-to-correctly-use-bootstrapjs-
 code pen example: http://codepen.io/sevilayha/pen/ExKGs
   */
  
-var app = angular.module('app', ['ui.bootstrap', 'ui.router']);
+var app = angular.module('app', ['ui.bootstrap', 'ui.router','ngAnimate', 'ngTouch']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/home');
@@ -36,7 +36,7 @@ app.controller('introDivController', function($scope) {
     $scope.hideIntro = false;
 });
     
-app.controller('mainController', function($http,$scope,$stateParams,$state) {
+app.controller('mainController', function($http, $scope,$stateParams,$state) {    
     // Initialize App Variables
     $scope.sessionID = 0;
     $scope.numProps = 0;
@@ -86,7 +86,23 @@ app.controller('mainController', function($http,$scope,$stateParams,$state) {
         }
         if ($scope.propsShown.length < $scope.numProps) {
           $scope.propsShown.push($scope.propositionID);
-        } 
+        }
+      }
+
+    $scope.$parent.keyPressed = function(event){
+      console.log(event.keyCode + " In child scope.");
+      if (event.keyCode == 38)
+          console.log("up arrow");
+      else if (event.keyCode == 39){
+          console.log("right arrow");
+        $scope.propositionClicked(1);
+      }
+      else if (event.keyCode == 40)
+        console.log("down arrow");
+      else if (event.keyCode == 37){
+          console.log("left arrow");
+        $scope.propositionClicked(0);
+      }
     }
 });
  
@@ -110,7 +126,26 @@ app.controller('submitController', function($http,$scope,$stateParams,$state) {
     $scope.resetSubmitForm();
 	    
 });
-    
+
+//this controller listens for button presses (arrow keys throughout the whole app, attached to the body)
+//if it wasn't attached to the body, user would have to had specifically clicked on a div for it to be able to pick up arrow presses
+app.controller('BodyController', function($scope, $stateParams,$state) {
+	$scope.keyPressed = function(event){
+	    console.log(event.keyCode + " In parent scope");
+	    if (event.keyCode == 38)
+	        console.log("up arrow");
+	    else if (event.keyCode == 39){
+	        console.log("right arrow");
+	    	$scope.propositionClicked(1);
+	    }
+	    else if (event.keyCode == 40)
+	    	console.log("down arrow");
+	    else if (event.keyCode == 37){
+	        console.log("left arrow");
+	    	$scope.propositionClicked(0);
+    	}
+    }
+});
 })(); 
 
 //  NOTES  //
