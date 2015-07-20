@@ -118,7 +118,7 @@ app.controller('submitController', function($http,$scope,$stateParams,$state) {
 
 app.controller('BodyController', function($http, $scope, $stateParams,$state) {
     // Initialize App Variables
-    //updated on 7/19/2015 - moved these to the SessionCommonDataService
+    //updated on 7/19/2015 - moved these to this body controller
     //mainController is re-run every time the url/state is entered (so if user goes to check out about page and comes back, a new session starts)
     //Way to fix this would be to have a global sort of scope either through parent-child scope (which was what this, or with services, which was not used)
     //https://rclayton.silvrback.com/parent-child-controller-communication
