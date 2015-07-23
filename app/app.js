@@ -52,9 +52,17 @@ app.controller('introDivController', function($scope) {
 });
     
 app.controller('mainController', function($http, $scope,$stateParams,$state) {    
-    //upon arriving at a new url
+    //Upon arriving at a new url
     $scope.propositionPath = '/images/prop' + $stateParams.propID_urlParam + '.jpg';
     console.log('propositions shown: '+$scope.propsShown.length)
+    //Todo:
+    //upon arriving at a new URL, already know what the next url is to go to and load it in the card that is not displayed
+    //arriving for first time: load current proposition if it's not loaded
+    //arrive from swipe: update the url to show the new prop
+    //regardless of how we arrived - add a new prop into the deck
+    //the swipe needs to swipe the whole div, not just 1 img (in case the proposition is made of 2 images)
+
+
     // Define click function
     $scope.propositionClicked = function(choice){
         // ajax call to server to post
@@ -107,6 +115,35 @@ app.controller('mainController', function($http, $scope,$stateParams,$state) {
         $scope.propositionClicked(0);
       }
     }
+
+    //Swipe related
+
+    $scope.cardSwipedLeft = function(index) {
+        console.log('Left swipe');
+        $scope.propositionClicked(0);
+    }
+    $scope.cardSwipedRight = function(index) {
+        console.log('Right swipe');
+        $scope.propositionClicked(1);
+    }
+    $scope.cardDestroyed = function(index) {
+        $scope.cards.splice(index, 1);
+        console.log('Card removed');
+       $scope.addCards(1);
+    }
+    $scope.transitionOut = function(card) {
+      console.log('card transition out');
+    };
+    $scope.transitionRight = function(card) {
+      console.log('card removed to the right');
+      console.log(card);
+    };
+    $scope.transitionLeft = function(card) {
+      console.log('card removed to the left');
+      console.log(card);
+    };
+
+
 });
  
 app.controller('submitController', function($http,$scope,$stateParams,$state) {
@@ -163,46 +200,20 @@ app.controller('BodyController', function($http, $scope, $stateParams,$state) {
   $scope.keyPressed = function(event){
 
   }
-
-  //Swipe related
-  $scope.cards = [];
-   
-  $scope.addCard = function(img, name) {
-   var newCard = {image: img, title: name};
-   newCard.id = Math.random();
-   $scope.cards.unshift(angular.extend({}, newCard));
-  };
-   
-  $scope.addCards = function(count) {
-    $http.get('http://api.randomuser.me/?results=' + count).then(function(value) {
-    angular.forEach(value.data.results, function (v) {
-     $scope.addCard(v.user.picture.medium, v.user.email);
-   });
-    });
-  };
-  $scope.addCards(5);
-  $scope.cardSwipedLeft = function(index) {
-      console.log('Left swipe');
-  }
-  $scope.cardSwipedRight = function(index) {
-      console.log('Right swipe');
-  }
-  $scope.cardDestroyed = function(index) {
-      $scope.cards.splice(index, 1);
-      console.log('Card removed');
-     $scope.addCards(1);
-  }
-  $scope.transitionOut = function(card) {
-    console.log('card transition out');
-  };
-  $scope.transitionRight = function(card) {
-    console.log('card removed to the right');
-    console.log(card);
-  };
-  $scope.transitionLeft = function(card) {
-    console.log('card removed to the left');
-    console.log(card);
-  };
+    $scope.cards = [];
+    $scope.addCard = function(img, name) {
+     var newCard = {image: img, title: name};
+     newCard.id = Math.random();
+     $scope.cards.unshift(angular.extend({}, newCard));
+    };
+    $scope.addCards = function(count) {
+      $http.get('http://api.randomuser.me/?results=' + count).then(function(value) {
+      angular.forEach(value.data.results, function (v) {
+       $scope.addCard(v.user.picture.medium, v.user.email);
+     });
+      });
+    };
+    $scope.addCards(5);
 });
 })(); 
 
