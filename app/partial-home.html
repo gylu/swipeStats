@@ -7,5 +7,27 @@
 		<a ui-sref="home" class="button btn-primary" type="button" ng-click="propositionClicked(0)" value="Left">Left</a>
 		<a ui-sref="home" class="button btn-primary" type="button" ng-click="propositionClicked(1)" value="Right">Right</a> 
 
+		
+	<div class="media">
+          <td-cards>
+              <td-card id="td-card" ng-repeat="card in cards"
+              on-transition-left="transitionLeft(card)"
+              on-transition-right="transitionRight(card)"
+              on-transition-out="transitionOut(card)"
+              on-destroy="cardDestroyed($index)"
+              on-swipe-left="cardSwipedLeft($index)"
+              on-swipe-right="cardSwipedRight($index)"
+              on-partial-swipe="cardPartialSwipe(amt)">
+                  <div class="title">
+                      {{card.title}}
+                  </div>
+                  <div class="image">
+                      <div class="no-text overlayBox"><div class="noBox boxed">Trash</div></div>
+                      <img ng-src="{{card.image}}">
+                      <div class="yes-text overlayBox"><div class="yesBox boxed" id="centerMe">Save</div></div>
+                  </div>
+              </td-card>
+          </td-cards>
+  	</div>
 	
 </div>

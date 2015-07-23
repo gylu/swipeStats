@@ -12,22 +12,32 @@
     <script src="ui-bootstrap-tpls-0.13.0.js"></script>
     <script src="angular-ui-router.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-animate.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-touch.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-animate.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-touch.min.js"></script>
     <script src="app.js"></script>
-	  <!--Tutorials followed   -->
-	  <!--
-	https://scotch.io/tutorials/angular-routing-using-ui-router
-	-->
-      
+
     <!-- Bootstrap - compiled and minified CSS, and optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
       
+    <!-- Below are files needed for swipe, starting with ionic. The .js files and folders are in bower_components, but I copied them over to the app folder -->
+    <!-- ionic/angularjs js -->
+    <script src="ionic/js/ionic.bundle.js"></script>
+    <script src="collide/collide.js"></script>
+    <script src="ionic-contrib-tinder-cards/ionic.tdcards.js"></script>
+    <link href="css_for_swipe.css" rel="stylesheet">
+
     <!-- Latest compiled and minified JavaScript 
-    DON'T NEED THIS, BECAUSE ANGULARUI IS SUFFICIENT, ONLY NEED BOOTSTRAP'S CSS
+    DON'T NEED JQUERY or bootstrap's js file, BECAUSE ANGULAR-UI IS SUFFICIENT, ONLY NEED BOOTSTRAP'S CSS
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    -->
+    
+    <!--Tutorials followed   -->
+    <!--
+    ui-router: https://scotch.io/tutorials/angular-routing-using-ui-router
+    swipe: https://blog.nraboy.com/2015/01/making-tinder-style-swipe-cards-ionic-framework/
+    swipe pull fm server: http://devdactic.com/optimize-tinder-cards/
     -->
       
     <style>

@@ -5,7 +5,19 @@ tutorial followed: https://scotch.io/tutorials/how-to-correctly-use-bootstrapjs-
 code pen example: http://codepen.io/sevilayha/pen/ExKGs
   */
  
-var app = angular.module('app', ['ui.bootstrap', 'ui.router','ngAnimate', 'ngTouch']);
+var app = angular.module('app', ['ui.bootstrap', 'ui.router','ngAnimate', 'ngTouch', 'ionic.contrib.ui.tinderCards']);
+
+//something for the swipe cards to work, fm following tutorial
+app.directive('noScroll', function() {
+    return {
+        restrict: 'A',
+        link: function($scope, $element, $attr) {
+            $element.on('touchmove', function(e) {
+                e.preventDefault();
+            });
+        }
+    }
+})
 
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
@@ -150,18 +162,50 @@ app.controller('BodyController', function($http, $scope, $stateParams,$state) {
 	//It doesn't have to be fully defined though
   $scope.keyPressed = function(event){
 
-    }
+  }
+
+  //Swipe related
+  $scope.cards = [];
+   
+  $scope.addCard = function(img, name) {
+   var newCard = {image: img, title: name};
+   newCard.id = Math.random();
+   $scope.cards.unshift(angular.extend({}, newCard));
+  };
+   
+  $scope.addCards = function(count) {
+    $http.get('http://api.randomuser.me/?results=' + count).then(function(value) {
+    angular.forEach(value.data.results, function (v) {
+     $scope.addCard(v.user.picture.medium, v.user.email);
+   });
+    });
+  };
+  $scope.addCards(5);
+  $scope.cardSwipedLeft = function(index) {
+      console.log('Left swipe');
+  }
+  $scope.cardSwipedRight = function(index) {
+      console.log('Right swipe');
+  }
+  $scope.cardDestroyed = function(index) {
+      $scope.cards.splice(index, 1);
+      console.log('Card removed');
+     $scope.addCards(1);
+  }
+  $scope.transitionOut = function(card) {
+    console.log('card transition out');
+  };
+  $scope.transitionRight = function(card) {
+    console.log('card removed to the right');
+    console.log(card);
+  };
+  $scope.transitionLeft = function(card) {
+    console.log('card removed to the left');
+    console.log(card);
+  };
 });
 })(); 
 
 //  NOTES  //
-
-//reason why the whole thing is wrapped in parenthesis for javascript to work
+//Reason why the whole thing is wrapped in parenthesis for javascript to work
 //http://stackoverflow.com/questions/9053842/advanced-javascript-why-is-this-function-wrapped-in-parentheses
-
-
-
-// in swipe.js, end goal:
-// on user click track when swipe occurs with swipe.js code, 
-// use toggleSlide out at same time toggleSlide in with newly created div (or hammerjs)
-// delete old div after slide out
