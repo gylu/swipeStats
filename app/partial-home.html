@@ -14,10 +14,11 @@
               on-transition-left="transitionLeft(card)"
               on-transition-right="transitionRight(card)"
               on-transition-out="transitionOut(card)"
+              on-partial-swipe="cardPartialSwipe(amt)"
               on-destroy="cardDestroyed($index)"
               on-swipe-left="cardSwipedLeft($index)"
               on-swipe-right="cardSwipedRight($index)"
-              on-partial-swipe="cardPartialSwipe(amt)">
+              >
                   <div class="title">
                       {{card.title}}
                   </div>

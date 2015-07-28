@@ -19,6 +19,50 @@ app.directive('noScroll', function() {
     }
 })
 
+app.run(function($rootScope, $http, $q){
+    //this run seciton will always run. covering the following cases:
+    //new user arrived at url swipestats.com <-- will go into the showFirstRandomProp state
+    //new user arrived at url swipestats.com/proposition/23 <-- will go into the maincontroller state
+    //need to get the numProps before anything can run
+    $rootScope.deferTill=$q.defer();
+    $rootScope.sessionID = 0;
+    $rootScope.numProps = 0;
+    $rootScope.propsShown = [];
+    $rootScope.nextPropPath='';
+    $rootScope.cards = [];
+     $rootScope.addCard = function(img, propTitle) {
+         var newCard = {image: img, title: propTitle};
+         newCard.id = Math.random();
+         $rootScope.cards.push(angular.extend({}, newCard));
+     };
+
+    // Define Init Function
+    $rootScope.init = function () {
+       $http.get('/init').
+         success(function(params) {
+             $rootScope.sessionID = params.sessionID;
+             $rootScope.numProps = params.numProps;
+             $rootScope.deferTill.resolve(); //ajax is done
+         }).
+         error(function(data) {
+             alert(data);
+         });
+    }
+    $rootScope.init();
+})
+
+
+    //this is for if the user arrived at swipestats.com (or whatever our URL is)
+    //todo, need to make this run after the stuff in body controller is run. do that probably by making the body controller stuff a service
+app.controller('showFirstRandomProp', function($http,$scope,$state, $rootScope){
+     $rootScope.deferTill.promise.then( function(){
+             var newPropIDshowNow = Math.ceil(Math.random() * $rootScope.numProps);
+             //huge PITA lesson learned, format of state.go param useage requires object, https://github.com/angular-ui/ui-router/issues/928
+            $state.go('proposition',{'propID_urlParam':newPropIDshowNow});
+         }
+    );
+})
+
 app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
     $stateProvider
@@ -26,14 +70,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
 		.state('home', {
 			url: '/',
 			templateUrl: 'partial-home.html',
-			controller: 'BodyController'
+			controller: 'showFirstRandomProp'
 		})
 	
-    .state('proposition', {
-      url: '/proposition/:propID_urlParam',
-      templateUrl: 'partial-home.html',
-      controller: 'mainController'
-    })
+        .state('proposition', {
+          url: '/proposition/:propID_urlParam',
+          templateUrl: 'partial-home.html',
+          controller: 'mainController'
+        })
 
 		.state('submit', {
 			url: '/submit',
@@ -51,99 +95,117 @@ app.controller('introDivController', function($scope) {
     $scope.hideIntro = false;
 });
     
-app.controller('mainController', function($http, $scope,$stateParams,$state) {    
-    //Upon arriving at a new url
-    $scope.propositionPath = '/images/prop' + $stateParams.propID_urlParam + '.jpg';
-    console.log('propositions shown: '+$scope.propsShown.length)
+app.controller('mainController', function($http, $scope,$stateParams,$state, $rootScope) {    
+
+
     //Todo:
     //upon arriving at a new URL, already know what the next url is to go to and load it in the card that is not displayed
-    //arriving for first time: load current proposition if it's not loaded
-    //arrive from swipe: update the url to show the new prop
-    //regardless of how we arrived - add a new prop into the deck
-    //the swipe needs to swipe the whole div, not just 1 img (in case the proposition is made of 2 images)
+    // 1) Fetch the image and display it
+    // 2) Regardless of how we arrived - add a new prop into the deck
+        //Arriving for first time: load current proposition if it's not loaded
+        //Arrive from swipe: update the url to show the new prop
+    //The swipe needs to swipe the whole div, not just 1 img (in case the proposition is made of 2 images)
 
-
-    // Define click function
-    $scope.propositionClicked = function(choice){
-        // ajax call to server to post
-        var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionPath, choice: choice};
-        $http.post('/new_choice', propData).
-         error(function(msg) {
-             alert(msg);
-         });       
-        // get prediction every n choices
-        if ($scope.propsShown.length % 5 == 0 && $scope.propsShown.length>0) {
-          $http.post('/prediction',{sessionID: $scope.sessionID}).
-            success(function(msg) {
-              alert(msg);
-            }).
-            error(function(msg) {
-              alert(msg);
-            });
+    //This is the same as doing: $scope.propositionPath = $rootScope.nextPropPath;
+    //Todo, check to see if we should instead just to currPath=nextPath kinda thing if it's quicker and doesn't need ajax
+    $rootScope.deferTill.promise.then(function(){
+        $scope.propositionPath = '/images/prop' + $stateParams.propID_urlParam + '.jpg';
+        //only add the card if there are no cards at all
+        if ($rootScope.cards.length==0){
+            $rootScope.addCard($scope.propositionPath,$scope.propositionPath);
         }
 
-        //Mark prop as shown. only mark the prop as shown after user has made a selection (otherwise user might go to about page and come back and it has used up a prop)
-        if ($scope.propsShown.length < $scope.numProps) {
-            $scope.propsShown.push($scope.propositionPath);
+        console.log('num propositions shown: '+$rootScope.propsShown.length);
+        //pick the next prop to show in the stack, make sure it wasn't picked before nor the current one being shown
+        //E.g. if there's 3 props total, user already shown/picked prop1, prop3, so prop2 was the nextPropPath, now the current propPath
+        //we have no more props to show, even though propsShown.length is 2, because we're alreadying showing the only prop left
+        var newPropID=Math.ceil(Math.random() * $rootScope.numProps);
+        if ($rootScope.propsShown.length < $rootScope.numProps -1 ){
+            while ( ($.inArray('/images/prop' + newPropID + '.jpg', $rootScope.propsShown ) >= 0) || ('/images/prop' + newPropID + '.jpg') ==  ($scope.propositionPath) ) {
+                newPropID=Math.ceil(Math.random() * $rootScope.numProps);
+            }
+            $rootScope.nextPropPath='/images/prop' + newPropID + '.jpg';
         } else{
-          console.log('showed all propositions');
+            $rootScope.nextPropPath=$scope.propositionPath;
         }
-        
-        //come up with new propID for user then send off to new page
-        //Get new prop id and ensure it hasn't already been shown
-        var newPropID=Math.ceil(Math.random() * $scope.numProps);
-        while ( ($.inArray('/images/prop' + newPropID + '.jpg', $scope.propsShown ) >= 0) && ($scope.propsShown.length < $scope.numProps ) ) {
-            newPropID=Math.ceil(Math.random() * $scope.numProps);
+        $rootScope.addCard($rootScope.nextPropPath,$rootScope.nextPropPath);
+    
+
+
+        // Define click function
+        $scope.propositionClicked = function(choice){
+            // ajax call to server to post
+            var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionPath, choice: choice};
+            $http.post('/new_choice', propData).
+             error(function(msg) {
+                 alert(msg);
+             });
+            // get prediction every n choices
+            if ($rootScope.propsShown.length % 5 == 0 && $rootScope.propsShown.length>0) {
+              $http.post('/prediction',{sessionID: $scope.sessionID}).
+                success(function(msg) {
+                  alert(msg);
+                }).
+                error(function(msg) {
+                  alert(msg);
+                });
+            }
+
+            //Mark prop as shown. Since it's inside propositionClicked, we'll only mark the prop as shown after user has made a selection (otherwise user might go to about page and come back and it has used up a prop)
+            if ($rootScope.propsShown.length < $rootScope.numProps) {
+                $rootScope.propsShown.push($scope.propositionPath);
+            } else{
+              console.log('showed all propositions');
+            }
+            $state.go('proposition',{'propID_urlParam':newPropID});
+            
+          }
+
+        $scope.$parent.keyPressed = function(event){
+          console.log(event.keyCode + " In child scope.");
+          if (event.keyCode == 38)
+              console.log("up arrow");
+          else if (event.keyCode == 39){
+              console.log("right arrow");
+            $scope.propositionClicked(1);
+          }
+          else if (event.keyCode == 40)
+            console.log("down arrow");
+          else if (event.keyCode == 37){
+              console.log("left arrow");
+            $scope.propositionClicked(0);
+          }
         }
 
-        $state.go('proposition',{'propID_urlParam':newPropID});
-      }
+        //Swipe related
+        //note, needed to perform this fix on ionic.tdcards.js, https://github.com/driftyco/ionic-ion-tinder-cards/issues/65#issuecomment-100679906
+        $scope.cardSwipedLeft = function(index) {
+            console.log('Left swipe');
+            
+        }
+        $scope.cardSwipedRight = function(index) {
+            console.log('Right swipe');
+            
+        }
+        $scope.cardDestroyed = function(index) {
+            //$scope.cards.splice(index, 1);
+            console.log('Card destroyed');
+        }
+        $scope.transitionOut = function(card) {
+          console.log('card transition out');
+        };
+        $scope.transitionRight = function(card) {
+          console.log('card removed to the right');
+          //$scope.propositionClicked(0); //todo left off here, 
+          console.log(card);
+        };
+        $scope.transitionLeft = function(card) {
+          console.log('card removed to the left');
+          //$scope.propositionClicked(1);
+          console.log(card);
+        };
 
-    $scope.$parent.keyPressed = function(event){
-      console.log(event.keyCode + " In child scope.");
-
-      if (event.keyCode == 38)
-          console.log("up arrow");
-      else if (event.keyCode == 39){
-          console.log("right arrow");
-        $scope.propositionClicked(1);
-      }
-      else if (event.keyCode == 40)
-        console.log("down arrow");
-      else if (event.keyCode == 37){
-          console.log("left arrow");
-        $scope.propositionClicked(0);
-      }
-    }
-
-    //Swipe related
-
-    $scope.cardSwipedLeft = function(index) {
-        console.log('Left swipe');
-        $scope.propositionClicked(0);
-    }
-    $scope.cardSwipedRight = function(index) {
-        console.log('Right swipe');
-        $scope.propositionClicked(1);
-    }
-    $scope.cardDestroyed = function(index) {
-        $scope.cards.splice(index, 1);
-        console.log('Card removed');
-       $scope.addCards(1);
-    }
-    $scope.transitionOut = function(card) {
-      console.log('card transition out');
-    };
-    $scope.transitionRight = function(card) {
-      console.log('card removed to the right');
-      console.log(card);
-    };
-    $scope.transitionLeft = function(card) {
-      console.log('card removed to the left');
-      console.log(card);
-    };
-
-
+    })
 });
  
 app.controller('submitController', function($http,$scope,$stateParams,$state) {
@@ -165,55 +227,30 @@ app.controller('submitController', function($http,$scope,$stateParams,$state) {
     $scope.resetSubmitForm();
 });
 
+
+
+
 app.controller('BodyController', function($http, $scope, $stateParams,$state) {
     // Initialize App Variables
+
     //updated on 7/19/2015 - moved these to this body controller
     //mainController is re-run every time the url/state is entered (so if user goes to check out about page and comes back, a new session starts)
     //Way to fix this would be to have a global sort of scope either through parent-child scope (which was what this, or with services, which was not used)
     //https://rclayton.silvrback.com/parent-child-controller-communication
     //http://crudbetter.com/angular-share-data-between-controllers/
-    $scope.sessionID = 0;
-    $scope.numProps = 0;
-    $scope.propositionPath = '';
-    $scope.propsShown = [];
-    
-    // Define Init Function
-    $scope.init = function () {
-       $http.get('/init').
-         success(function(params) {
-             $scope.sessionID = params.sessionID;
-             $scope.numProps = params.numProps;
-             var newPropID = Math.ceil(Math.random() * $scope.numProps);
-             //huge PITA lesson learned, format of state.go param useage requires object, https://github.com/angular-ui/ui-router/issues/928
-             $state.go('proposition',{'propID_urlParam':newPropID});
-         }).
-         error(function(data) {
-             alert(data);
-         });
+    //An example for using service that was not used http://fdietz.github.io/recipes-with-angular-js/controllers/sharing-code-between-controllers-using-services.html
+    //mainly because I didn't want to inject the service into all the controllers
 
+
+
+
+    //This listens for button presses (arrow keys throughout the whole app, attached to the body)
+    $scope.keyPressed = function(event){
+    //If it wasn't attached to the body, user would have to had specifically clicked on a div for it to be able to pick up arrow presses
+    //It doesn't have to be fully defined though
     }
-    $scope.init();
 
-  //This listens for button presses (arrow keys throughout the whole app, attached to the body)
-  //If it wasn't attached to the body, user would have to had specifically clicked on a div for it to be able to pick up arrow presses
-	//It doesn't have to be fully defined though
-  $scope.keyPressed = function(event){
 
-  }
-    $scope.cards = [];
-    $scope.addCard = function(img, name) {
-     var newCard = {image: img, title: name};
-     newCard.id = Math.random();
-     $scope.cards.unshift(angular.extend({}, newCard));
-    };
-    $scope.addCards = function(count) {
-      $http.get('http://api.randomuser.me/?results=' + count).then(function(value) {
-      angular.forEach(value.data.results, function (v) {
-       $scope.addCard(v.user.picture.medium, v.user.email);
-     });
-      });
-    };
-    $scope.addCards(5);
 });
 })(); 
 
