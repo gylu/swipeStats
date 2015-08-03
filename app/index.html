@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
       
-    <!-- Below are files needed for swipe, starting with ionic. The .js files and folders are in bower_components, but I copied them over to the app folder -->
+    <!-- Below are files needed for Ionic's swipe, starting with ionic. The .js files and folders are in bower_components, but I copied them over to the app folder -->
     <!-- ionic/angularjs js -->
     <script src="ionic/js/ionic.bundle.js"></script>
     <script src="collide/collide.js"></script>
@@ -36,22 +36,22 @@
     <!--Tutorials followed   -->
     <!--
     ui-router: https://scotch.io/tutorials/angular-routing-using-ui-router
-    swipe: https://blog.nraboy.com/2015/01/making-tinder-style-swipe-cards-ionic-framework/
-    swipe pull fm server: http://devdactic.com/optimize-tinder-cards/
+    ionic swipe: https://blog.nraboy.com/2015/01/making-tinder-style-swipe-cards-ionic-framework/
+    ionic swipe pull fm server: http://devdactic.com/optimize-tinder-cards/
     -->
       
     <style>
         /* body { padding-top:00px; }
         .btn { margin-bottom:20px; } */
-        html, body
+/*        html, body
         {
             height: 100%;
-        }
-        #wrapper {
+        }*/
+/*        #wrapper {
             position: relative;
             height: 100%;
         }
-        
+        */
         .intro-text, h1 {
           position: absolute;     
           left: 0;
@@ -68,15 +68,14 @@
         h1 {
           top: 50%;
         }
-        img {
+/*        img {
           top: 0;
-        }
+        }*/
 
 		.nonDraggableImage{
 			-webkit-user-drag: none;
 		}
     </style>
-
   </head>
   
   <body ng-keydown="keyPressed($event)" ng-controller="BodyController">
