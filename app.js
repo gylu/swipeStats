@@ -27,7 +27,7 @@ client.hset( 'session0','choice2' , {proposition: 2, choice: 1});
 client.hset( 'session1','choice1' , {proposition: 2, choice: 1});
 client.hset( 'session1','choice2' , {proposition: 4, choice: 1});
 
-client.hset('propositions','numProps',5);
+client.hset('propositions','numProps',6);
 client.hset('sessions','numSessions',0);
 
 app.get('/init', function(request,response){
