@@ -188,7 +188,7 @@ app.controller('mainController', function($http, $scope,$stateParams,$state, $ro
             
         }
         $scope.cardDestroyed = function(index) {
-            //$scope.cards.splice(index, 1);
+            $scope.cards.splice(index, 1);
             console.log('Card destroyed');
         }
         $scope.transitionOut = function(card) {
