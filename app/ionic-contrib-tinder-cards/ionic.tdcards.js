@@ -187,7 +187,7 @@
         }
         */
         ionic.requestAnimationFrame(function() { self._doDragStart(e) });
-      }, this.el), { swipe_velocity: 0.0 };
+      }, this.el), { swipe_velocity: 0.0 }; //made change here and updated this line on 7/30/2015 based on - https://github.com/baconmania/ionic-ion-tinder-cards/commit/4671d24cb8b0e5df95b9587906a9134d02c174d2
 
       ionic.onGesture('drag', function(e) {
         ionic.requestAnimationFrame(function() { self._doDrag(e) });

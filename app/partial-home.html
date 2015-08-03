@@ -1,43 +1,38 @@
 <div class="container">
-	<div class="row">
+<!-- 	<div class="row">
 		<a><img style="width:100%" id="followbutton" ng-src="{{propositionPath}}" class="slide slide-animation nonDraggableImage"
          ng-swipe-right="propositionClicked(1)" ng-swipe-left="propositionClicked(0)"/></a>
-	</div>
+	</div> -->
 
 <div class="row">
-  
-
-		<!--// add some swipejs stuff here -->
-		<a ui-sref="home" class="button btn-primary" type="button" ng-click="propositionClicked(0)" value="Left">Left</a>
-		<a ui-sref="home" class="button btn-primary" type="button" ng-click="propositionClicked(1)" value="Right">Right</a> 
+		<a class="button btn-primary" type="button" ng-click="propositionClicked(0)" value="Left">Left</a>
+		<a class="button btn-primary" type="button" ng-click="propositionClicked(1)" value="Right">Right</a> 
 </div>
 
 <div class="row">		
-
-          <td-cards style="width=100%">
-          asdf asdfa asdf a asd asf adf asdfs asdfa sdfs f asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf 
-              <td-card id="td-card" ng-repeat="card in cards"
-              on-transition-left="transitionLeft(card)"
-              on-transition-right="transitionRight(card)"
-              on-transition-out="transitionOut(card)"
-              on-partial-swipe="cardPartialSwipe(amt)"
-              on-destroy="cardDestroyed($index)"
-              on-swipe-left="cardSwipedLeft($index)"
-              on-swipe-right="cardSwipedRight($index)">
-                  <div class="title">
-                      {{card.title}}
-                  </div>
-                  <div class="image">
-                      <div class="no-text overlayBox">
-                        <div class="noBox boxed">Trash</div>
-                      </div>
-                      <img ng-src="{{card.image}}">
-                      <div class="yes-text overlayBox">
-                        <div class="yesBox boxed" id="centerMe">Save</div>
-                      </div>
-                  </div>
-              </td-card>
-          </td-cards>
-
+    <td-cards style="width=100%">
+<!--           Text testing out width of the div asdf asdfa asdf a asd asf adf asdfs asdfa sdfs f asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf asdf asdfa asdf a asd asf adf asdfs asdfa sdfsf  -->
+        <td-card id="td-card" ng-repeat="card in cards"
+        on-transition-left="transitionLeft(card)"
+        on-transition-right="transitionRight(card)"
+        on-transition-out="transitionOut(card)"
+        on-partial-swipe="cardPartialSwipe(amt)"
+        on-destroy="cardDestroyed($index)"
+        on-swipe-left="cardSwipedLeft($index)"
+        on-swipe-right="cardSwipedRight($index)">
+            <div class="title">
+                {{card.title}}
+            </div>
+            <div class="image">
+                <div class="no-text overlayBox">
+                  <div class="noBox boxed">Trash</div>
+                </div>
+                <img ng-src="{{card.image}}">
+                <div class="yes-text overlayBox">
+                  <div class="yesBox boxed" id="centerMe">Save</div>
+                </div>
+            </div>
+        </td-card>
+    </td-cards>
   </div>	
 </div>

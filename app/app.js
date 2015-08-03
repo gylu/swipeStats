@@ -53,7 +53,6 @@ app.run(function($rootScope, $http, $q){
 
 
     //this is for if the user arrived at swipestats.com (or whatever our URL is)
-    //todo, need to make this run after the stuff in body controller is run. do that probably by making the body controller stuff a service
 app.controller('showFirstRandomProp', function($http,$scope,$state, $rootScope){
      $rootScope.deferTill.promise.then( function(){
              var newPropIDshowNow = Math.ceil(Math.random() * $rootScope.numProps);
@@ -98,24 +97,27 @@ app.controller('introDivController', function($scope) {
 app.controller('mainController', function($http, $scope,$stateParams,$state, $rootScope) {    
 
 
-    //Todo:
-    //upon arriving at a new URL, already know what the next url is to go to and load it in the card that is not displayed
-    // 1) Fetch the image and display it
-    // 2) Regardless of how we arrived - add a new prop into the deck
-        //Arriving for first time: load current proposition if it's not loaded
-        //Arrive from swipe: update the url to show the new prop
+
     //The swipe needs to swipe the whole div, not just 1 img (in case the proposition is made of 2 images)
 
     //This is the same as doing: $scope.propositionPath = $rootScope.nextPropPath;
     //Todo, check to see if we should instead just to currPath=nextPath kinda thing if it's quicker and doesn't need ajax
     $rootScope.deferTill.promise.then(function(){
+        console.log('num propositions shown: '+$rootScope.propsShown.length);
+
+        //upon arriving at a new URL:
+        // 1) update the url
+        // 2) Fetch the proposition and display it
+            //if we already have the proposition in the deck, then no need to fetch it again
+            //if there is nothing in our deck, then add it
+        // 3) Regardless of how we arrived - add a new prop into the deck
+
+        //1) update URL
         $scope.propositionPath = '/images/prop' + $stateParams.propID_urlParam + '.jpg';
-        //only add the card if there are no cards at all
+        //2) only add the card if there are no cards at all
         if ($rootScope.cards.length==0){
             $rootScope.addCard($scope.propositionPath,$scope.propositionPath);
         }
-
-        console.log('num propositions shown: '+$rootScope.propsShown.length);
         //pick the next prop to show in the stack, make sure it wasn't picked before nor the current one being shown
         //E.g. if there's 3 props total, user already shown/picked prop1, prop3, so prop2 was the nextPropPath, now the current propPath
         //we have no more props to show, even though propsShown.length is 2, because we're alreadying showing the only prop left
@@ -134,6 +136,7 @@ app.controller('mainController', function($http, $scope,$stateParams,$state, $ro
 
         // Define click function
         $scope.propositionClicked = function(choice){
+            $scope.cards.splice(0, 1);
             // ajax call to server to post
             var propData = {sessionID: $scope.sessionID, proposition: $scope.propositionPath, choice: choice};
             $http.post('/new_choice', propData).
@@ -151,14 +154,15 @@ app.controller('mainController', function($http, $scope,$stateParams,$state, $ro
                 });
             }
 
-            //Mark prop as shown. Since it's inside propositionClicked, we'll only mark the prop as shown after user has made a selection (otherwise user might go to about page and come back and it has used up a prop)
+            //Mark prop as shown. Since this is inside propositionClicked, we'll only mark the prop as shown after user has made a selection (otherwise user might go to about page and come back and it has used up a prop)
             if ($rootScope.propsShown.length < $rootScope.numProps) {
                 $rootScope.propsShown.push($scope.propositionPath);
             } else{
               console.log('showed all propositions');
             }
+
+            //go to new proposition
             $state.go('proposition',{'propID_urlParam':newPropID});
-            
           }
 
         $scope.$parent.keyPressed = function(event){
@@ -177,7 +181,7 @@ app.controller('mainController', function($http, $scope,$stateParams,$state, $ro
           }
         }
 
-        //Swipe related
+        //Swipe related. A single swipe left for example will cause cardSwipedLeft, transitionLeft, transitionOut, cardDestoryed in that order
         //note, needed to perform this fix on ionic.tdcards.js, https://github.com/driftyco/ionic-ion-tinder-cards/issues/65#issuecomment-100679906
         $scope.cardSwipedLeft = function(index) {
             console.log('Left swipe');
@@ -185,23 +189,23 @@ app.controller('mainController', function($http, $scope,$stateParams,$state, $ro
         }
         $scope.cardSwipedRight = function(index) {
             console.log('Right swipe');
-            
         }
         $scope.cardDestroyed = function(index) {
-            $scope.cards.splice(index, 1);
-            console.log('Card destroyed');
+          //$scope.cards.splice(index, 1);
+          $scope.propositionClicked($scope.choice);
+          console.log('Card destroyed');
         }
         $scope.transitionOut = function(card) {
           console.log('card transition out');
         };
         $scope.transitionRight = function(card) {
           console.log('card removed to the right');
-          //$scope.propositionClicked(0); //todo left off here, 
+          $scope.choice=1;
           console.log(card);
         };
         $scope.transitionLeft = function(card) {
           console.log('card removed to the left');
-          //$scope.propositionClicked(1);
+          $scope.choice=0;
           console.log(card);
         };
 
