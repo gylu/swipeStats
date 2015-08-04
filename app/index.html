@@ -84,16 +84,29 @@
 	  <!-- apply our angular app to our site -->
 
 	<!-- NAVIGATION -->
-	<nav class="navbar navbar-inverse" role="navigation">
-		<div class="navbar-header">
-			<a class="navbar-brand" ui-sref="#">Swipe Stats</a>
-		</div>
-		<ul class="nav navbar-nav">
-			<li><a ui-sref="home">Home</a></li>
-			<li><a ui-sref="submit">Submit</a></li>
-			<li><a ui-sref="about">About</a></li>
-		</ul>
-	</nav>
+<nav class="navbar navbar-inverse" role="nvaigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span> 
+      </button>
+      <a class="navbar-brand" ui-sref="home">Swipe Stats</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+      <li><a ui-sref="home">Home</a></li>
+      <li><a ui-sref="submit">Submit</a></li>
+      <li><a ui-sref="about">About</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
 	<!-- MAIN CONTENT 
      add intro panel here, something like "Swipe left or right on each choice to play!" make it a div

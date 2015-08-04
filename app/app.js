@@ -55,6 +55,8 @@ app.run(function($rootScope, $http, $q){
     //this is for if the user arrived at swipestats.com (or whatever our URL is)
 app.controller('showFirstRandomProp', function($http,$scope,$state, $rootScope){
      $rootScope.deferTill.promise.then( function(){
+            //this prevents adding cards onto deck if user just navigates between "about" page and home. Todo: need to make this work better (e.g. going back to submit page doesn't change the propsition shown)
+            $rootScope.cards = [];
              var newPropIDshowNow = Math.ceil(Math.random() * $rootScope.numProps);
              //huge PITA lesson learned, format of state.go param useage requires object, https://github.com/angular-ui/ui-router/issues/928
             $state.go('proposition',{'propID_urlParam':newPropIDshowNow});
